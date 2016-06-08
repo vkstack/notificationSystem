@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <title>
+      A simple notification manager
+    </title>
+    <link rel="stylesheet" type="text/css" href="styles/icon.css">
+    <link rel="stylesheet" type="text/css" href="styles/materialize.min.css">
+  </head>
+  <body ng-app="mainApp" ng-controller="mainCtrl as ctrl">
+    <div class="container">
+	    <div class="row valign-wrapper">
+	    	<div class="col s6 card-panel offset-s3">
+	    		<div class="col s8 offset-s2">
+	    			<h1>welcome</h1>
+	    		</div>
+				<div class="col s6 offset-s2">
+				  <ul class="tabs">
+				    <li class="tab col s3"><a href="#signin">SignIn</a></li>
+				    <li class="tab col s3"><a href="#signup">SignUp</a></li>
+				  </ul>
+				</div>
+			    <div id="signin" class="col s10 offset-s1">
+			    	<form class="col s12">
+						<div class="input-field row">
+						  <input id="username" type="text" class="validate" ng-model="ctrl.inForm.username">
+						  <label for="username">username</label>
+						</div>
+						<div class="input-field row">
+						  <input id="pass" type="password" class="validate" ng-model="ctrl.inForm.password">
+						  <label for="pass">password</label>
+						</div>
+						<button class="row offset-s2 btn waves-effect" ng-click="ctrl.signIn()">singin</button>
+			    	</form>
+			    </div>
+				<div id="signup" class="col s10 offset-s1">
+			    	<form class="col s12">
+						<div class="input-field row">
+						  <input id="name" type="text" class="validate" ng-model="ctrl.upForm.name">
+						  <label for="name">name</label>
+						</div>
+						<div class="input-field row">
+						  <input id="email" type="email" class="validate" ng-model="ctrl.upForm.email">
+						  <label for="email">email</label>
+						</div>
+						<div class="input-field row">
+						  <input id="username" type="text" class="validate" ng-model="ctrl.upForm.username">
+						  <label for="username">username</label>
+						</div>
+						<div class="input-field row">
+						    <label class="active">user type</label>
+						    <select class="browser-default" ng-model="ctrl.upForm.type">
+						      <option value="" disabled selected>Choose</option>
+						      <option value="0">admin</option>
+						      <option value="1">normal</option>
+						    </select>
+					    </div>
+						<div class="input-field row">
+						  <input id="pass" type="password" class="validate" ng-model="ctrl.upForm.password">
+						  <label for="pass">password</label>
+						</div>
+						<button class="row offset-s2 btn waves-effect" ng-click="ctrl.signUp()">singup</button>
+			    	</form>
+				</div>
+	    	</div>
+	    </div>
+    </div>
+    <!-- <script src="/js/dependencies/sails.io.js"></script> -->
+    <script src="/js/dependencies/angular.min.js"></script>
+    <script src="/js/dependencies/jquery-2.1.1.min.js"></script>
+    <script src="/js/dependencies/materialize.min.js"></script>
+    <script src="/js/init.js"></script>
+    <script>
+      var app = angular.module('mainApp', [])
+        .controller('mainCtrl', ['$scope','$http',function($scope,$http){
+          var self=this;
+          self.signIn=function(){
+            $http.post("user/login",self.inForm)
+              .then(function(res){
+                console.log(res);
+                location.reload();
+              },function(err){
+                console.log(err);
+              });
+          };
+          self.signUp=function(){
+            console.log(self.upForm);
+            $http.post("user",self.upForm)
+              .then(function(res){
+
+              },function(err){
+
+              });
+          };
+        }]);
+    </script>
+  </body>
+</html>
