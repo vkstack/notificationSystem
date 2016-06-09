@@ -13,8 +13,8 @@ module.exports={
             awaitdata: true,
             numberOfRetries: Number.MAX_VALUE
           }).stream();
-
         stream.on('data', function(val) {
+          if(/i|u|d|!n/.test(val.op))
           console.log('Doc: %j',val);
         });
 

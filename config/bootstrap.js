@@ -14,7 +14,7 @@ module.exports.bootstrap = function(cb) {
   sails.bcrypt=require('bcrypt');
   sails.amqp = require('amqplib/callback_api');
   sails.promise = require("q");
-  //ListenOplog.runn();
+  ListenOplog.runn();
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb();

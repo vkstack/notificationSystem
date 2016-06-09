@@ -1,7 +1,7 @@
 var app = angular.module('mainApp', [])
   .controller('homeCtrl',['$scope','$http','$interval',function($scope,$http,$interval) {
     var self=this;
-    var isConnected,isAlreadyRequested=false;
+    var isConnected=true,isAlreadyRequested=false;
     io.socket.on('connect',function(){
       isConnected=true;
     });
