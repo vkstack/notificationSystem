@@ -49,7 +49,7 @@ module.exports = {
       var obj = this.toObject();
       delete obj.password;
       return obj;
-    },
+    }
   },
   beforeCreate: function(user, cb) {
     var isNormal=user.type;
