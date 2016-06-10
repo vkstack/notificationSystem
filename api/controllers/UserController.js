@@ -5,6 +5,17 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 module.exports = {
+  test:function(req,res){
+    x="users";
+    var query="db.users.find({'subscriptions.collection."+x+"':true})";
+    console.log(query);
+    User.query(query)
+      .then(function(result){
+        res.ok(result);
+      },function(err){
+        res.ok(err);
+      });
+  },
 	home:function(req,res){
 		res.render("homepage");
 	},
@@ -28,19 +39,15 @@ module.exports = {
 	},
   getNotification:function(req,res){
     req.connection.setTimeout(10*60*1000);
-    //console.log("query",req.query);
     console.log("timeOut started",req.signedCookies.user.id);
-    //this will engage any request to 2 minutes.
-    var timeout=60*1000,
+    var timeout=2*60*1000,
       isResponded=false,
       timer=setTimeout(function(){
         console.log("No message in Queue");
-        //qConnection.close();
          isResponded=true;
         res.ok({done:-1000});
       },timeout),
       queue=req.signedCookies.user.id;
-    //Listener will be here if it listens from corresponding queue then i will trigger clearTimeout on above timer.
     RabbitMQHelper.queueListener(queue,timeout)
       .then(function(result){
         if(!isResponded){
@@ -54,10 +61,6 @@ module.exports = {
           res.negotiate(err);
         }
       });
-    //setTimeout(function(){
-    //  clearTimeout(timer);
-    //  res.ok({done:1000});
-    //},3000)
   }
 };
 

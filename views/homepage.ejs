@@ -8,70 +8,30 @@
   </head>
   <body ng-app="mainApp" ng-controller="homeCtrl as ctrl">
     <header>
-
-      <ul id="slide-out" class="side-nav">
-        <li><a href="#!">First Sidebar Link</a></li>
-        <li><a href="#!">Second Sidebar Link</a></li>
-        <li class="no-padding">
-          <ul class="collapsible collapsible-accordion">
-            <li>
-              <a class="collapsible-header">Dropdown<i class="mdi-navigation-arrow-drop-down"></i></a>
-              <div class="collapsible-body">
-                <ul>
-                  <li><a href="#!">First</a></li>
-                  <li><a href="#!">Second</a></li>
-                  <li><a href="#!">Third</a></li>
-                  <li><a href="#!">Fourth</a></li>
-                </ul>
-              </div>
-            </li>
-          </ul>
-        </li>
+      <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="mdi-navigation-menu"></i></a>
+      <ul id="nav-mobile" class="side-nav fixed">
+        <div class="section">
+          <li>
+            <a id="logo-container" href="." class="brand-logo"><img src="favicon.ico">
+            </a>
+          </li>
+        </div>
+        <div class="divider"></div>
+        <div class="section collapsible collapsible-accordion">
+          <li class="bold"><a href="/" class="waves-effect waves-teal">View Orders|subOrders</a></li>
+          <li class="bold"><a href="/signOut" class="waves-effect waves-teal">Sign Out</a></li>
+        </div>
       </ul>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="#!">First Sidebar Link</a></li>
-        <li><a href="#!">Second Sidebar Link</a></li>
-        <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Dropdown<i class="mdi-navigation-arrow-drop-down right"></i></a></li>
-        <ul id='dropdown1' class='dropdown-content'>
-          <li><a href="#!">First</a></li>
-          <li><a href="#!">Second</a></li>
-          <li><a href="#!">Third</a></li>
-          <li><a href="#!">Fourth</a></li>
-        </ul>
-      </ul>
-      <a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
-      <nav>
-        <ul class="right hide-on-med-and-down">
-          <li><a href="#!">First Sidebar Link</a></li>
-          <li><a href="#!">Second Sidebar Link</a></li>
-        </ul>
-        <ul id="slide-out" class="side-nav">
-          <li><a href="#!">First Sidebar Link</a></li>
-          <li><a href="#!">Second Sidebar Link</a></li>
-        </ul>
-        <a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
-      </nav>
     </header>
     <main>
       <div class="container">
-
+        <div class="" ui-view></div>
       </div>
     </main>
-    <script src="/js/dependencies/sails.io.js"></script>
     <script src="/js/dependencies/angular.min.js"></script>
     <script src="/js/dependencies/jquery-2.1.1.min.js"></script>
     <script src="/js/dependencies/materialize.min.js"></script>
     <script src="/js/init.js"></script>
     <script src="/js/app.js"></script>
-    <script>
-      $('.button-collapse').sideNav({
-          menuWidth: 240, // Default is 240
-          edge: 'left', // Choose the horizontal origin
-          closeOnClick: false, // Closes side-nav on <a> clicks, useful for Angular/Meteor
-          easing: 'easeInQuad',
-          visibility: 'hide'
-        }
-      );
-    </script>
   </body>
 </html>

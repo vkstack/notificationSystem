@@ -35,12 +35,7 @@ module.exports = {
     subscriptions:{
       type:"json",
       defaultsTo:{
-        "collections":{
-          "users":false,
-          "news":false,
-          "collectionA":false,
-          "collectionB":false,
-        },
+        "collections":[],
         "document":{
         }
       }
@@ -49,7 +44,7 @@ module.exports = {
       var obj = this.toObject();
       delete obj.password;
       return obj;
-    },
+    }
   },
   beforeCreate: function(user, cb) {
     var isNormal=user.type;
@@ -62,13 +57,8 @@ module.exports = {
         if (err)
           return cb(err);
         user.password = hash;
-        if(isNormal==0){
-          for(var key in user.subscriptions.collections){
-            if(user.subscriptions.collections.hasOwnProperty(key)){
-              user.subscriptions.collections[key]=true;
-            }
-          }
-        }
+        if(isNormal==0)
+          user.subscriptions.collections=["users", "news", "collectionA", "collectionB"];
         cb();
       });
     });

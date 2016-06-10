@@ -1,7 +1,7 @@
 module.exports={
-  runn:function(){
-    var MongoClient = require('mongodb').MongoClient;
 
+  keepOnListening:function(){
+    var MongoClient = require('mongodb').MongoClient;
     MongoClient.connect("mongodb://localhost:27017/local", function(err, db) {
       if(err){console.error("ERROR",err); return;}
 
@@ -13,49 +13,67 @@ module.exports={
             awaitdata: true,
             numberOfRetries: Number.MAX_VALUE
           }).stream();
-
         stream.on('data', function(val) {
-          console.log('Doc: %j',val);
+          if(/i|u|d|c/.test(val.op)){
+            var operationMessage={};
+            operationMessage.database=val.ns.split('.')[0];
+            if(!/$/.test(val.ns.split('.')[1]))
+              operationMessage.collection=val.ns.split('.')[1];
+            /**
+             * cc : collection created
+             * cd : collection dropped
+             * dd : database dropped
+             * i  : document inserted
+             * d  : document deleted
+             * u  : document updated
+             * */
+            operationMessage.type=val.op;
+            if(val.op==='c'){
+              operationMessage.type="high level operation";
+              if(val.o.create){
+                operationMessage.type="cc";
+                operationMessage.collection=val.o.create;
+              }
+              else if(val.o.drop){
+                operationMessage.type="cd";
+                operationMessage.collection=val.o.drop;
+              }
+              else if(val.o.dropDatabase){
+                operationMessage.type="dd";
+              }
+            }
+
+            else if(val.op==='d'){
+              operationMessage.doc=val.o;
+            }
+
+            else if(val.op==='i'){
+              operationMessage.doc=val.o;
+            }
+
+            else if(val.op==='u'){
+              operationMessage.doc={
+                _id:val.o2._id,
+                updated:val.o
+              };
+            }
+
+            RabbitMQHelper.queuePusher(operationMessage)
+              .then(function(res){
+
+              },function(err){
+
+              });
+          }
         });
 
         stream.on('error', function(val) {
           console.log('Error: %j', val);
         });
-
         stream.on('end', function(){
           console.log('End of stream');
         });
       });
-
     });
-    // var oplog=sails.mongoOplog('mongodb://127.0.0.1:27017/local').tail();
-    // console.log("Hi",oplog);
-    // oplog.on('op', function (data) {
-    //   console.log(data);
-    // });
-
-    // oplog.on('insert', function (doc) {
-    //   console.log(doc.op);
-    // });
-
-    // oplog.on('update', function (doc) {
-    //   console.log(doc.op);
-    // });
-
-    // oplog.on('delete', function (doc) {
-    //   console.log(doc.op._id);
-    // });
-
-    // oplog.on('error', function (error) {
-    //   console.log(error);
-    // });
-
-    // oplog.on('end', function () {
-    //   console.log('Stream ended');
-    // });
-
-    // oplog.stop(function () {
-    //   console.log('server stopped');
-    // });
   }
 };

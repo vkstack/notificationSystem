@@ -9,7 +9,7 @@ amqp.connect('amqp://localhost', function(err, conn) {
     }
     var q = '575520071ed490ea1b506910';
     ch.assertQueue(q, {durable: true});
-    ch.sendToQueue(q,new Buffer("Hi this is vajahat kareem"),{persistent:true});
+    ch.sendToQueue(q,new Buffer(JSON.stringify({message:"Hi this is vajahat kareem"})),{persistent:true});
     setTimeout(function() {
       conn.close();
     }, 1000);
