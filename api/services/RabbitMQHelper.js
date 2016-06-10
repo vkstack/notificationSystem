@@ -60,7 +60,7 @@ module.exports={
     return deferred.promise;
   },
   queueListener:function(Queue,timeOut){
-    var deferred=sails.promise.defer(),timer,tmpIntervalTimer,data;
+    var deferred=sails.promise.defer(),timer,tmpTimer,data,isConnectionOpened=false;
     sails.amqp.connect('amqp://localhost', function(err, conn) {
       conn.createConfirmChannel(function(err, ch) {
         if(err){
@@ -70,25 +70,49 @@ module.exports={
           deferred.reject(err);
         }
         else{
+          isConnectionOpened=true;
           ch.assertQueue(Queue, {durable: true});
           ch.prefetch(1);
-          ch.consume(Queue,function(msg){
-            data=msg.content.toString();
-            console.log(data);
-            clearTimeout(timer);
-            ch.ack(msg);
-            setTimeout(function(){
-              console.log("removing listener after listening");
-              conn.close();
-              deferred.resolve(JSON.parse(data));
-            },100);
-          },{noAck: false});
+          var isGotAnyMessage=false;
+          tmpTimer=setInterval(function(){
+            if(!isGotAnyMessage){
+              ch.get(Queue,{noAck:false},function(err,msg){
+                if(err){
+                  console.log(err);
+                  if(isConnectionOpened){
+                    isConnectionOpened=false;
+                    conn.close();
+                  }
+                  clearTimeout(timer);
+                  deferred.reject(err);
+                  clearInterval(tmpTimer);
+                }
+                else if(msg){
+                  isGotAnyMessage=true;
+                  data=msg.content.toString();
+                  clearTimeout(timer);
+                  ch.ack(msg);
+                  setTimeout(function(){
+                    if(isConnectionOpened){
+                      isConnectionOpened=false;
+                      conn.close();
+                    }
+                    deferred.resolve(JSON.parse(data));
+                    clearInterval(tmpTimer);
+                  },100);
+                }
+              });
+            }
+          },1);
         }
       });
       timer=setTimeout(function(){
         console.log("removing listener without listening");
-        //clearInterval(tmpIntervalTimer);
-        conn.close();
+        clearInterval(tmpTimer);
+        if(isConnectionOpened){
+          isConnectionOpened=false;
+          conn.close();
+        }
         deferred.reject(new Error("Nothing in the Queue."));
       },timeOut-10);
     });

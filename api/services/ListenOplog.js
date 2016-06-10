@@ -58,12 +58,12 @@ module.exports={
               };
             }
 
-            RabbitMQHelper.queuePusher(operationMessage)
-              .then(function(res){
-
-              },function(err){
-
-              });
+            //RabbitMQHelper.queuePusher(operationMessage)
+            //  .then(function(res){
+            //
+            //  },function(err){
+            //
+            //  });
           }
         });
 
