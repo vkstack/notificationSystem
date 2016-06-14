@@ -5,6 +5,7 @@
     </title>
     <link rel="stylesheet" type="text/css" href="styles/icon.css">
     <link rel="stylesheet" type="text/css" href="styles/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
   </head>
   <body ng-app="mainApp" ng-controller="homeCtrl as ctrl">
     <header>
@@ -18,17 +19,42 @@
         </div>
         <div class="divider"></div>
         <div class="section collapsible collapsible-accordion">
-          <li class="bold"><a href="/" class="waves-effect waves-teal">View Orders|subOrders</a></li>
-          <li class="bold"><a href="/signOut" class="waves-effect waves-teal">Sign Out</a></li>
+          <li class="bold"><a ui-sref="welcome" class="waves-effect waves-teal">Home</a></li>
+          <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+              <li>
+                <a class="collapsible-header">Subscription<i class="mdi-navigation-arrow-drop-down"></i></a>
+                <div class="collapsible-body">
+                  <ul>
+                    <li><a ui-sref="collection" class="waves-effect waves-teal">Collection</a></li>
+                    <li><a ui-sref="document" class="waves-effect waves-teal">Documents</a></li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li class="bold"><a ng-click="ctrl.signOut()" class="waves-effect waves-teal">Sign Out</a></li>
         </div>
       </ul>
     </header>
     <main>
-      <div class="container">
-        <div class="" ui-view></div>
+      <div class="container" style="margin-left: 13%; width: 80%;">
+        <div class="row">
+          <div class="col s9" ui-view></div>
+          <div class="col s3">
+            <div id="topNotificationBar"><h4>Notifications</h4></div>
+            <div id="notificationBar">
+              <div id="notificationMain">
+                <div id="randomNote">Wait...! Notifications will be pushed here whenever it comes.</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
     <script src="/js/dependencies/angular.min.js"></script>
+    <script src="/js/dependencies/angular-cookies.min.js"></script>
+    <script src="/js/dependencies/angular-ui-router.min.js"></script>
     <script src="/js/dependencies/jquery-2.1.1.min.js"></script>
     <script src="/js/dependencies/materialize.min.js"></script>
     <script src="/js/init.js"></script>

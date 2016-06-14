@@ -7,7 +7,7 @@ amqp.connect('amqp://localhost', function(err, conn) {
       conn.close();
       return deferred.reject(err);
     }
-    var q = '575520071ed490ea1b506910';
+    var q = '575c03d506a97a745ef83d91';
     ch.assertQueue(q, {durable: true});
     ch.sendToQueue(q,new Buffer(JSON.stringify({message:"Hi this is vajahat kareem"})),{persistent:true});
     setTimeout(function() {

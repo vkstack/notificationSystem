@@ -13,7 +13,7 @@ module.exports = {
       defaultsTo:""
     },
     newsType:{
-      type:"string",//local,international
+      type:"string",//local,global
       defaultsTo:"local"
     },
     place:{

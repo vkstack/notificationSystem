@@ -16,7 +16,7 @@ module.exports = {
     },
     subscribers:{
       type:"json",
-      defaultsTo:{}
+      defaultsTo:[]
     }
   }
 };

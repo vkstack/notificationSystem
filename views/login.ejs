@@ -77,6 +77,7 @@
             $http.post("user/login",self.inForm)
               .then(function(res){
                 console.log(res);
+                localStorage.setItem('user',JSON.stringify(res.data));
                 location.reload();
               },function(err){
                 console.log(err);

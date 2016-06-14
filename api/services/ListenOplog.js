@@ -29,7 +29,6 @@ module.exports={
              * */
             operationMessage.type=val.op;
             if(val.op==='c'){
-              operationMessage.type="high level operation";
               if(val.o.create){
                 operationMessage.type="cc";
                 operationMessage.collection=val.o.create;
@@ -53,17 +52,18 @@ module.exports={
 
             else if(val.op==='u'){
               operationMessage.doc={
-                _id:val.o2._id,
+                id:val.o2._id,
                 updated:val.o
               };
             }
 
-            //RabbitMQHelper.queuePusher(operationMessage)
-            //  .then(function(res){
-            //
-            //  },function(err){
-            //
-            //  });
+            //console.log(val);
+            RabbitMQHelper.queuePusher(operationMessage)
+              .then(function(res){
+
+              },function(err){
+
+              });
           }
         });
 

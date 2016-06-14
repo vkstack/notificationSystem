@@ -45,7 +45,7 @@ module.exports = {
       timer=setTimeout(function(){
         console.log("No message in Queue");
          isResponded=true;
-        res.ok({done:-1000});
+        res.ok({data:-1});
       },timeout),
       queue=req.signedCookies.user.id;
     RabbitMQHelper.queueListener(queue,timeout)
@@ -53,13 +53,41 @@ module.exports = {
         if(!isResponded){
           clearTimeout(timer);
           console.log("sending message from Queue");
-          res.ok(result);
+          var message=result.message;
+          if(result.type==='cc')
+            message='<p>A collection: <b>'+result.collection+'</b> in database: <b>'+result.database+'</b> is created.</p>';
+          else if(result.type==='cd')
+            message='<p>A collection: <b>'+result.collection+'</b> from database: <b>'+result.database+'</b> is dropped.</p>';
+          else if(result.type==='dd')
+            message='<p>A databased: <b>'+result.database+'</b> dropped.</p>';
+          res.ok({message:message});
         }
       },function(err){
         if(!isResponded){
           clearTimeout(timer);
           res.negotiate(err);
         }
+      });
+  },
+  colSubscribe:function(req,res){
+    res.render('partials/colSubscription');
+  },
+  docSubscribe:function(req,res){
+    res.render('partials/docSubscription');
+  },
+  collectionSubscribe:function(req,res){
+    console.log(req.body);
+    var userID=req.signedCookies.user.id,
+      fields=[];
+    for(var key in req.body){
+      if(req.body[key]){
+        fields.push(key);
+      }
+    }
+    User.update({id:userID},{"subscriptions.collections":fields})
+      .exec(function(err){
+        if(err) return res.negotiate(err);
+        res.ok();
       });
   }
 };

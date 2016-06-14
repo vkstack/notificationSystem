@@ -36,12 +36,21 @@ module.exports = {
       type:"json",
       defaultsTo:{
         "collections":[],
-        "document":{
+        "documents":[]
         }
-      }
     },
     toJSON: function(){
-      var obj = this.toObject();
+      var obj = this.toObject(),
+        x={
+          users:false,
+          news:false,
+          collectionA:false,
+          collectionB:false
+        };
+      for(var i in obj.subscriptions.collections)
+        x[obj.subscriptions.collections[i]]=true;
+      obj.subscriptions.collections=x;
+      delete x;
       delete obj.password;
       return obj;
     }
@@ -54,8 +63,10 @@ module.exports = {
         user.type="normal";
     sails.bcrypt.genSalt(10, function(err, salt) {
       sails.bcrypt.hash(user.password, salt, function(err, hash) {
-        if (err)
+        if (err){
+          console.log(err);
           return cb(err);
+        }
         user.password = hash;
         if(isNormal==0)
           user.subscriptions.collections=["users", "news", "collectionA", "collectionB"];

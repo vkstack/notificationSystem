@@ -1,0 +1,18 @@
+#topNotificationBar {
+  height: 40px;
+}
+
+#notificationBar {
+  position: absolute;
+  top: 40px;
+  bottom: 0px;
+  width: 25%;
+  overflow: hidden;
+}
+
+#notificationMain {
+  position:absolute;
+  top:30px;
+  bottom:0px;
+  overflow-y: scroll;
+}

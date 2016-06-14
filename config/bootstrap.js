@@ -16,6 +16,10 @@ module.exports.bootstrap = function(cb) {
   sails.promise     = require('q');
   sails.async       = require('async');
   ListenOplog.keepOnListening();
+  //News.find({"a.b.c":1})
+  //  .then(function(row){
+  //    console.log(JSON.stringify(row));
+  //  });
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb();

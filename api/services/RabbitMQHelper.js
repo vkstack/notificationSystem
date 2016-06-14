@@ -2,9 +2,19 @@
  * Created by vkstack on 7/6/16.
  */
 module.exports={
+  /**
+   * Format of opLog
+   * {
+   *    type        : /u|i|d|dd|cd|cc/,
+   *    database    : [name of db]
+   *    collection  : (name of collection)  //for u|i|d
+   *    doc         : ()                    //for u|i|d
+   * }
+   *
+   * */
   queuePusher:function(oplogDoc){
     var deferred=sails.promise.defer(),
-      self=this;
+    self=this;
     if(oplogDoc.type.length==2){
       User.find({type:"admin"},{fields:['id']}).exec(function(err,users){
         if(err)return deferred.reject();
@@ -18,28 +28,51 @@ module.exports={
           deferred.resolve();
         });
       });
-      //console.log(oplogDoc);
     }
     else{
       sails.async.parallel([function(cb){
-        if(oplogDoc.type!='u')
-          cb();
-        else{
-          //document level subscriptions.
+        if(oplogDoc.type=='u'){
+          console.log(JSON.stringify(oplogDoc));
+          var checkFieldSubscribed=[];
+          for(var key in oplogDoc.doc.updated.$set){
+            checkFieldSubscribed.push(key);
+          }
+          Subscription.find({docID:oplogDoc.doc.id,"subscribers.field":{$in:checkFieldSubscribed}}, {"subscribers.$":1})
+            .exec(function(err,row){
+              if(err)return cb(err);
+              cb(null,row.subscribers);
+            });
         }
       },function(cb){
-        var finding="subscriptions.collections["+oplogDoc.collection+"]";
-        User.find({})
-          .exec(function(err,users){
-            if(err)cb(err);
-          })
+        if(oplogDoc.type!='u'){
+          User.find({"subscriptions.collection":oplogDoc.collection},{fields:["id"]})
+            .exec(function(err,users){
+              if(err)return cb(err);
+              cb(null,users);
+            })
+        }
       }],function(err,results){
-        deferred.resolve();
+        results[0]=results[0].concat(results[1]);
+        var obj={};
+        sails.async.each(results[0],function(user,cb){
+          if(!obj[user.id]){
+            self.enque(user.id,oplogDoc)
+              .then(function(){
+                obj[user.id]=true;
+                cb();
+              },function(){
+                cb();
+              })
+          }
+        },function(err){
+          deferred.resolve();
+        });
       });
     }
     //User.find({subscriptions.collection}).
     return deferred.promise;
   },
+
   enque:function(Queue,oplogDoc){
     var deferred=sails.promise.defer()
     sails.amqp.connect('amqp://localhost', function(err, conn) {
@@ -59,6 +92,7 @@ module.exports={
     });
     return deferred.promise;
   },
+
   queueListener:function(Queue,timeOut){
     var deferred=sails.promise.defer(),timer,tmpTimer,data,isConnectionOpened=false;
     sails.amqp.connect('amqp://localhost', function(err, conn) {
