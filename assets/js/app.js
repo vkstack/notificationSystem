@@ -118,7 +118,7 @@ var app = angular.module('mainApp', ['ui.router','ngCookies'])
       }).then(function(response){
         if(response.data.id) {
           Materialize.toast('Subscribed fields becomes checked', 3000, 'rounded','green');
-          for(var i in response.data.subscribers[0].fields)
+          for(var i in response.data.subscribers[0].fields){}
           console.log(response.data);
         }
         else

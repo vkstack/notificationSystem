@@ -39,7 +39,21 @@
   </div>
   <div class="row">
     <div class="col s12" ng-init="ctrl.getTopNewsID()">
-      <table class="highlight" id="docTable">
+      <style>
+        #docTable thead{
+          display: block;
+        }
+        #docTable tbody{
+          min-height: 100px;
+          max-height: 175px;
+          display: block;
+          overflow-x: hidden;
+        }
+        #docTable tbody td, #docTable thead th {
+          width: 40%;
+        }
+      </style>
+      <table class="highlight" id="docTable" style="width: 85%;">
         <thead>
         <tr>
           <th data-field="id">id</th>
