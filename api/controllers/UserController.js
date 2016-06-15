@@ -97,16 +97,19 @@ module.exports = {
     console.log(req.body);
     var userID=req.signedCookies.user.id,
       docID=req.body.docID;
+    //console.log();
     sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
       if(err)
         return;
+      console.log('connected user', userID);
       db.collection('subscription')
-        .update({docID:docID,"subscribers.id":userID},{$set:{"subscribers.$.fields":req.body.fields}},function(err,results){
-          if(err) return;
-          if(results.result.nModified>0){
-            db.close();
-            return res.ok()
-          }
+        .updateOne({docID:docID},{$pullAll:{'subscribers.$.id':[userID]}},function(err,result){
+          if(err) return console.log(err);
+          console.log(result);
+          //if(results.result.nModified>0){
+          //  db.close();
+          //  return res.ok()
+          //}
           db.collection('subscription').update({docID:docID},{$push:{"subscribers":{id:userID,fields:req.body.fields}}},function(err,results){
             if(err) return;
             db.close();

@@ -6,10 +6,24 @@
  */
 
 module.exports = {
-  connection: 'testMongo',
-  tableName:'restaurants',
+  tableName:"test",
   attributes: {
-
+    text:{
+      type:"string",
+      defaultsTo:""
+    },
+    newsType:{
+      type:"string",//local,global
+      defaultsTo:"local",
+    },
+    place:{
+      type:"string",
+      defaultsTo:"unknown"
+    },
+    importanceLevel:{
+      type:"integer",
+      defaultsTo:9,//0 for most important
+    }
   }
 };
 

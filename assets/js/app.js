@@ -78,7 +78,7 @@ var app = angular.module('mainApp', ['ui.router','ngCookies'])
         url:'user/collectionSubscribe',
         data:self.collectionSubscribed
       }).then(function(res){
-        Materialize.toast('Collection subscription Updated for the You.', 3000, 'rounded','green');
+        Materialize.toast('Collection subscription Updated for You.', 3000, 'rounded','green');
       },function(err){
         Materialize.toast('Some Error occurred.', 3000, 'rounded');
       });
@@ -97,7 +97,7 @@ var app = angular.module('mainApp', ['ui.router','ngCookies'])
         data:self.docSubForm,
         method:'post'
       }).then(function(res){
-        Materialize.toast('Field level subscription Updated for the You.', 3000, 'rounded','green');
+        Materialize.toast('Field level subscription Updated for You.', 3000, 'rounded','green');
       },function(err){
         Materialize.toast('Some Error occurred.', 3000, 'rounded');
       })

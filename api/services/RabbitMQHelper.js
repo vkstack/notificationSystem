@@ -29,52 +29,58 @@ module.exports={
         });
       });
     }
-    else{
-      sails.async.parallel([function(cb){
-        if(oplogDoc.type=='u'){
-          console.log(JSON.stringify(oplogDoc));
-          var checkFieldSubscribed=[];
-          for(var key in oplogDoc.doc.updated.$set){
-            checkFieldSubscribed.push(key);
-          }
-          Subscription.find({docID:oplogDoc.doc.id,"subscribers.field":{$in:checkFieldSubscribed}}, {"subscribers.$":1})
-            .exec(function(err,row){
-              if(err)return cb(err);
-              cb(null,row.subscribers);
-            });
-        }
-      },function(cb){
-        if(oplogDoc.type!='u'){
-          User.find({"subscriptions.collection":oplogDoc.collection},{fields:["id"]})
-            .exec(function(err,users){
-              if(err)return cb(err);
-              cb(null,users);
-            })
-        }
-      }],function(err,results){
-        results[0]=results[0].concat(results[1]);
-        var obj={};
-        sails.async.each(results[0],function(user,cb){
-          if(!obj[user.id]){
-            self.enque(user.id,oplogDoc)
-              .then(function(){
-                obj[user.id]=true;
-                cb();
-              },function(){
-                cb();
-              })
-          }
-        },function(err){
-          deferred.resolve();
-        });
+    else if(/i|d/.test(oplogDoc.type)){
+      //console.log(oplogDoc);
+      sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
+        if(err) deferred.reject(err);
+        db.collection('users').find({'subscriptions.collections':oplogDoc.collection},{'_id':1})
+          .each(function(err,doc){
+            if(err)return;
+            if(doc){
+              //console.log(doc._id.toString());
+              self.enque(doc._id.toString(),oplogDoc).then(function(){},function(){});
+            }
+            else{
+              //console.log('done');
+              db.close();
+              deferred.resolve();
+            }
+          });
       });
     }
-    //User.find({subscriptions.collection}).
+    else if(oplogDoc.collection=='news'){
+      //console.log(JSON.stringify(oplogDoc));
+      var x=1;
+      var fieldsUpdated=[],
+        setFields=oplogDoc.doc.$set;
+      for(var key in setFields){
+        fieldsUpdated.push(key);
+      }
+      sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
+        if(err) deferred.reject(err);
+        db.collection('subscription').find({docID:oplogDoc.doc.id,"subscribers.fields":{$in:fieldsUpdated}}, {"subscribers.$.id":1})
+          .each(function(err,doc){
+            if(err)return;
+            if(doc){
+              console.log(doc);
+            }
+            else{
+              //console.log('done');
+              db.close();
+              deferred.resolve();
+            }
+          });
+      });
+
+    }
+    else{
+      //console.log(JSON.stringify(oplogDoc));
+    }
     return deferred.promise;
   },
 
   enque:function(Queue,oplogDoc){
-    var deferred=sails.promise.defer()
+    var deferred=sails.promise.defer();
     sails.amqp.connect('amqp://localhost', function(err, conn) {
       conn.createConfirmChannel(function(err, ch) {
         if(err){

@@ -17,13 +17,17 @@ module.exports={
           if(/i|u|d|c/.test(val.op)){
             var operationMessage={};
             operationMessage.database=val.ns.split('.')[0];
-            if(!/$/.test(val.ns.split('.')[1]))
+            if(/i|u|d/.test(val.op)){
               operationMessage.collection=val.ns.split('.')[1];
+            }
+            //if(/!$/.test(val.ns.split('.')[1]))
+            //  operationMessage.collection=val.ns.split('.')[1];
             /**
              * cc : collection created
              * cd : collection dropped
              * dd : database dropped
              * i  : document inserted
+             * d  : document deleted
              * d  : document deleted
              * u  : document updated
              * */
@@ -41,7 +45,6 @@ module.exports={
                 operationMessage.type="dd";
               }
             }
-
             else if(val.op==='d'){
               operationMessage.doc=val.o;
             }

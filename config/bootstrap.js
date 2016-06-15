@@ -19,6 +19,11 @@ module.exports.bootstrap = function(cb) {
 
   sails.mongoClient = sails.mongodb.MongoClient;
   //ListenOplog.keepOnListening();
+
+  //sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
+  //  if(err) deferred.reject(err);
+  //});
+
   //Subscription.query('db.subscription.find()')
   //  .exec(function(err,result){
   //    if(!err)console.log(result);
