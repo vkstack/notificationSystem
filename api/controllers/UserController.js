@@ -119,21 +119,18 @@ module.exports = {
   },
   getDocSub:function(req,res){
     var userID=req.signedCookies.user.id;
+    console.log(userID,req.query);
     sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
-      if(err)
-        return;
+      if(err) return res.negotiate(err);
       db.collection('subscription')
-        .find({docID:req.query.docID,"subscribers.id":userID},{'subscribers.$':1},function(err,result){
-          if(err) return;
-          console.log(result);
+        .findOne({docID:req.query.docID,"subscribers.id":userID},{'subscribers.$':1},function(err,doc){
+          if(err)
+            return res.negotiate(err);
           db.close();
+          if(doc)
+            return res.ok(doc.subscribers[0]);
           res.ok();
         });
     });
-    //Subscription.findOne({docID:req.query.docID,"subscribers.id":userID})
-    //  .exec(function(err,result){
-    //    if(err)res.negotiate(err);
-    //    res.ok(result);
-    //  });
   }
 };
