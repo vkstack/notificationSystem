@@ -14,7 +14,7 @@ module.exports = {
     },
     newsType:{
       type:"string",//local,global
-      defaultsTo:"local"
+      defaultsTo:"local",
     },
     place:{
       type:"string",

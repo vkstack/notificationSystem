@@ -34,7 +34,8 @@ module.exports.routes = {
 
   '/':"UserController.home",
   'get /partials/colSubscribe':'UserController.colSubscribe',
-  'get /partials/docSubscribe':'UserController.docSubscribe'
+  'get /partials/docSubscribe':'UserController.docSubscribe',
+  'get /partials/docSubForm'  :'UserController.docSubForm'
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *

@@ -75,6 +75,9 @@ module.exports = {
   docSubscribe:function(req,res){
     res.render('partials/docSubscription');
   },
+  docSubForm:function(req,res){
+    res.render('partials/docSubForm');
+  },
   collectionSubscribe:function(req,res){
     console.log(req.body);
     var userID=req.signedCookies.user.id,
@@ -89,6 +92,48 @@ module.exports = {
         if(err) return res.negotiate(err);
         res.ok();
       });
+  },
+  documentSubscribe:function(req,res){
+    console.log(req.body);
+    var userID=req.signedCookies.user.id,
+      docID=req.body.docID;
+    sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
+      if(err)
+        return;
+      db.collection('subscription')
+        .update({docID:docID,"subscribers.id":userID},{$set:{"subscribers.$.fields":req.body.fields}},function(err,results){
+          if(err) return;
+          if(results.result.nModified>0){
+            console.log(results);
+            db.close();
+            return res.ok()
+          }
+          db.collection('subscription').update({docID:docID},{$push:{"subscribers":{id:userID,fields:req.body.fields}}},function(err,results){
+            if(err) return;
+            console.log(results);
+            db.close();
+            return res.ok()
+          })
+        });
+    });
+  },
+  getDocSub:function(req,res){
+    var userID=req.signedCookies.user.id;
+    sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
+      if(err)
+        return;
+      db.collection('subscription')
+        .find({docID:req.query.docID,"subscribers.id":userID},{'subscribers.$':1},function(err,result){
+          if(err) return;
+          console.log(result);
+          db.close();
+          res.ok();
+        });
+    });
+    //Subscription.findOne({docID:req.query.docID,"subscribers.id":userID})
+    //  .exec(function(err,result){
+    //    if(err)res.negotiate(err);
+    //    res.ok(result);
+    //  });
   }
 };
-

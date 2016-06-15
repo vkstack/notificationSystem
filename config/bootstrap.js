@@ -15,7 +15,20 @@ module.exports.bootstrap = function(cb) {
   sails.amqp        = require('amqplib/callback_api');
   sails.promise     = require('q');
   sails.async       = require('async');
-  ListenOplog.keepOnListening();
+  sails.mongodb     = require('mongodb');
+
+  sails.mongoClient = sails.mongodb.MongoClient;
+  var assert=require('assert');
+
+  sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
+    if(err){console.error("ERROR",err); return;}
+    sails.db=db;
+  });
+  //ListenOplog.keepOnListening();
+  //Subscription.query('db.subscription.find()')
+  //  .exec(function(err,result){
+  //    if(!err)console.log(result);
+  //  });
   //News.find({"a.b.c":1})
   //  .then(function(row){
   //    console.log(JSON.stringify(row));

@@ -16,3 +16,7 @@
   bottom:0px;
   overflow-y: scroll;
 }
+
+table .cr {
+  min-width: 30px;
+}

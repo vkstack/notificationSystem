@@ -3,4 +3,62 @@
     <h4>Document level Subscriptions</h4>
     <p>(Subscription on field in any document)</p>
   </div>
+  <div class="row">
+    <form class="col s12">
+      <div class="row">
+        <p class="col s6">
+          <input id="docID" type="text" class="validate" ng-model="ctrl.docSubForm.docID">
+          <label for="docID">DocID</label>
+        </p>
+        <div class="col s3">
+          <button type="submit" class="btn waves-effect" ng-click="ctrl.subscribeDocument()">Submit</button>
+        </div>
+        <div class="col s3">
+          <button class="btn waves-effect" ng-click="ctrl.getDocSubscriptions()">search</button>
+        </div>
+      </div>
+      <div class="row">
+        <p class="col s6">
+          <input type="checkbox" id="c1" ng-checked="false" ng-model="ctrl.docSubForm.fields.text"/>
+          <label for="c1">Text</label>
+        </p>
+        <p class="col s6">
+          <input type="checkbox" id="c2" ng-checked="false" ng-model="ctrl.docSubForm.fields.newsType"/>
+          <label for="c2">Type</label>
+        </p>
+        <p class="col s6">
+          <input type="checkbox" id="c3" ng-checked="false" ng-model="ctrl.docSubForm.fields.place"/>
+          <label for="c3">Place</label>
+        </p>
+        <p class="col s6">
+          <input type="checkbox" id="c4" ng-checked="false" ng-model="ctrl.docSubForm.fields.importanceLevel"/>
+          <label for="c4">IMPlevel</label>
+        </p>
+      </div>
+    </form>
+  </div>
+  <div class="row">
+    <div class="col s12" ng-init="ctrl.getTopNewsID()">
+      <table class="highlight" id="docTable">
+        <thead>
+        <tr>
+          <th data-field="id">id</th>
+          <th data-field="name">text</th>
+          <th data-field="type">type</th>
+          <th data-field="place">place</th>
+          <th data-field="level">IMPlevel</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="x in ctrl.newsDocs">
+          <td>{{x.id}}</td>
+          <td>{{x.text}}</td>
+          <td>{{x.newsType}}</td>
+          <td>{{x.place}}</td>
+          <td>{{x.importanceLevel}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

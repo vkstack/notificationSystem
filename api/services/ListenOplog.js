@@ -1,7 +1,7 @@
 module.exports={
 
   keepOnListening:function(){
-    var MongoClient = require('mongodb').MongoClient;
+    var MongoClient = sails.mongodb.MongoClient;
     MongoClient.connect("mongodb://localhost:27017/local", function(err, db) {
       if(err){console.error("ERROR",err); return;}
 

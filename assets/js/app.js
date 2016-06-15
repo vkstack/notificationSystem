@@ -72,7 +72,6 @@ var app = angular.module('mainApp', ['ui.router','ngCookies'])
     self.subscribeCollection=function(){
       self.colSubForm=self.collectionSubscribed;
       console.log(self.colSubForm);
-      //console.log();
       $http({
         method:'post',
         url:'user/collectionSubscribe',
@@ -83,7 +82,49 @@ var app = angular.module('mainApp', ['ui.router','ngCookies'])
         Materialize.toast('Some Error occurred.', 3000, 'rounded');
       });
     };
-    self.getSubDocs=function(){
+    self.subscribeDocument=function(){
+      var docFields=[];
+      for(var key in self.docSubForm.fields){
+        if(self.docSubForm.fields[key]===true){
+          docFields.push(key);
+        }
+      }
+      console.log(self.docSubForm);
+      self.docSubForm.fields=docFields;
+      $http({
+        url:'user/documentSubscribe',
+        data:self.docSubForm,
+        method:'post'
+      }).then(function(res){
+        Materialize.toast('Field level subscription Updated for the You.', 3000, 'rounded','green');
+      },function(err){
+        Materialize.toast('Some Error occurred.', 3000, 'rounded');
+      })
+    };
+    self.getTopNewsID = function(){
+      $http.get('news')
+        .then(function(res){
+          self.newsDocs=res.data;
+        });
+    };
+    self.getSubDocs = function(){
 
     };
+    self.getDocSubscriptions=function(){
+      $http({
+        url:"user/getDocSub",
+        params:{docID:self.docSubForm.docID},
+        method:'get'
+      }).then(function(response){
+        if(response.data.id) {
+          Materialize.toast('Subscribed fields becomes checked', 3000, 'rounded','green');
+          for(var i in response.data.subscribers[0].fields)
+          console.log(response.data);
+        }
+        else
+          Materialize.toast('No subscriptions', 3000, 'rounded','green');
+      },function(err){
+        Materialize.toast('Some Error occurred.', 3000, 'rounded');
+      });
+    }
   }]);
