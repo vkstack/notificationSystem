@@ -64,6 +64,7 @@ var app = angular.module('mainApp', ['ui.router','ngCookies'])
         params:{id:JSON.parse(localStorage.getItem('user')).id}
       }).then(function(res){
         self.collectionSubscribed=res.data.subscriptions.collections;
+        console.log(self.collectionSubscribed);
       },function(err){
         console.log(err);
       });
@@ -75,7 +76,7 @@ var app = angular.module('mainApp', ['ui.router','ngCookies'])
       $http({
         method:'post',
         url:'user/collectionSubscribe',
-        data:self.colSubForm
+        data:self.collectionSubscribed
       }).then(function(res){
         Materialize.toast('Collection subscription Updated for the You.', 3000, 'rounded','green');
       },function(err){

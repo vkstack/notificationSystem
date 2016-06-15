@@ -18,12 +18,6 @@ module.exports.bootstrap = function(cb) {
   sails.mongodb     = require('mongodb');
 
   sails.mongoClient = sails.mongodb.MongoClient;
-  var assert=require('assert');
-
-  sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
-    if(err){console.error("ERROR",err); return;}
-    sails.db=db;
-  });
   //ListenOplog.keepOnListening();
   //Subscription.query('db.subscription.find()')
   //  .exec(function(err,result){

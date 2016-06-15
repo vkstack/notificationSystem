@@ -104,13 +104,11 @@ module.exports = {
         .update({docID:docID,"subscribers.id":userID},{$set:{"subscribers.$.fields":req.body.fields}},function(err,results){
           if(err) return;
           if(results.result.nModified>0){
-            console.log(results);
             db.close();
             return res.ok()
           }
           db.collection('subscription').update({docID:docID},{$push:{"subscribers":{id:userID,fields:req.body.fields}}},function(err,results){
             if(err) return;
-            console.log(results);
             db.close();
             return res.ok()
           })
