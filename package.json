@@ -6,6 +6,7 @@
   "keywords": [],
   "dependencies": {
     "amqplib": "^0.4.2",
+    "async": "^2.0.0-rc.6",
     "bcrypt": "^0.8.6",
     "ejs": "2.3.4",
     "grunt": "0.4.5",
@@ -22,7 +23,7 @@
     "grunt-sync": "0.2.4",
     "include-all": "~0.1.6",
     "kerberos": "0.0.21",
-    "mongo-oplog": "^1.0.1",
+    "mongodb": "^2.1.18",
     "q": "^1.4.1",
     "rc": "1.0.1",
     "sails": "~0.12.3",

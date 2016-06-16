@@ -10,7 +10,6 @@
  */
 
 module.exports.bootstrap = function(cb) {
-  sails.mongoOplog  = require('mongo-oplog');
   sails.bcrypt      = require('bcrypt');
   sails.amqp        = require('amqplib/callback_api');
   sails.promise     = require('q');
