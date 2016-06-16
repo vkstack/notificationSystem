@@ -26,8 +26,8 @@ var app = angular.module('mainApp', ['ui.router','ngCookies'])
             isAlreadyRequested=false;
             console.log(response);
             if(response.data.message){
-              angular.element(document.getElementById("randomNote")).prepend("<div class='divider'/><div class='section'>"+response.data.message+"</div>"+new Date().toLocaleString()+"<div class='divider'/>");
-              Materialize.toast(response.data.message, 3000,'green','rounded');
+              angular.element(document.getElementById("randomNote")).prepend("<div class='divider'/><div class='col s12 section'>"+response.data.message+"</div>"+new Date().toLocaleString()+"<div class='divider'/>");
+              //Materialize.toast(response.data.message, 3000,'green','rounded');
             }
           },function(err){
             isAlreadyRequested=false;

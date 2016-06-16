@@ -57,19 +57,21 @@ module.exports={
         if(/text|newsType|place|importanceLevel/.test(key))
           fieldsUpdated.push(key);
       }
-      console.log(fieldsUpdated);
+      //console.log(fieldsUpdated);
       sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
         if(err) deferred.reject(err);
         var UsersNotified={};
         db.collection('subscription').findOne({docID:oplogDoc.doc.id.toString(),"subscribers.fields":{$in:fieldsUpdated}},
-          {"subscribers.id":1},function(err,doc){
+          {"subscribers.$.id":1},function(err,doc){
             sails.async.series([
               function(cb){
                 if(doc && doc.subscribers.length>0){
+                  console.log(doc);
                   sails.async.each(doc.subscribers,function(userID,cb1){
-                    self.enque(userID.toString(),oplogDoc)
+                    self.enque(userID.id.toString(),oplogDoc)
                       .then(function(){
-                        UsersNotified[userID.toString()]=true;
+                        console.log("field level notification sent: ",userID.id);
+                        UsersNotified[userID.id.toString()]=true;
                         cb1();
                       },function(){
                         cb1();
@@ -85,7 +87,7 @@ module.exports={
                   .each(function(err,doc){
                     if(err) return console.log(err);
                     if(doc){
-                      console.log(doc);
+                      //console.log(doc);
                       if(!UsersNotified[doc._id.toString()]){
                         self.enque(doc._id.toString(),oplogDoc)
                           .then(function(){},function(){});
@@ -98,7 +100,6 @@ module.exports={
             ],function(){
               db.close();
             });
-
           });
       });
     }
