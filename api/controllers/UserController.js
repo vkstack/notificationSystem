@@ -60,6 +60,8 @@ module.exports = {
             message='<p>A collection: <b>'+result.collection+'</b> from database: <b>'+result.database+'</b> is dropped.</p>';
           else if(result.type==='dd')
             message='<p>A databased: <b>'+result.database+'</b> dropped.</p>';
+          else
+            message='<p>'+JSON.stringify(result)+'</p>';
           res.ok({message:message});
         }
       },function(err){
@@ -69,6 +71,7 @@ module.exports = {
         }
       });
   },
+
   colSubscribe:function(req,res){
     res.render('partials/colSubscription');
   },

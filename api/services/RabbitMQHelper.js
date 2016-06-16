@@ -48,30 +48,59 @@ module.exports={
           });
       });
     }
-    else if(oplogDoc.collection=='news'){
+    else if(oplogDoc.type=='u' && oplogDoc.collection=='news'){
       //console.log(JSON.stringify(oplogDoc));
       var x=1;
       var fieldsUpdated=[],
-        setFields=oplogDoc.doc.$set;
+        setFields=oplogDoc.doc.updated.$set;
       for(var key in setFields){
-        fieldsUpdated.push(key);
+        if(/text|newsType|place|importanceLevel/.test(key))
+          fieldsUpdated.push(key);
       }
+      console.log(fieldsUpdated);
       sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
         if(err) deferred.reject(err);
-        db.collection('subscription').find({docID:oplogDoc.doc.id,"subscribers.fields":{$in:fieldsUpdated}}, {"subscribers.$.id":1})
-          .each(function(err,doc){
-            if(err)return;
-            if(doc){
-              console.log(doc);
-            }
-            else{
-              //console.log('done');
+        var UsersNotified={};
+        db.collection('subscription').findOne({docID:oplogDoc.doc.id.toString(),"subscribers.fields":{$in:fieldsUpdated}},
+          {"subscribers.id":1},function(err,doc){
+            sails.async.series([
+              function(cb){
+                if(doc && doc.subscribers.length>0){
+                  sails.async.each(doc.subscribers,function(userID,cb1){
+                    self.enque(userID.toString(),oplogDoc)
+                      .then(function(){
+                        UsersNotified[userID.toString()]=true;
+                        cb1();
+                      },function(){
+                        cb1();
+                      });
+                  },function(){
+                    cb();
+                  })
+                }
+                else cb();
+              },
+              function(cb){
+                db.collection('users').find({"subscriptions.collections":oplogDoc.collection},{id:1})
+                  .each(function(err,doc){
+                    if(err) return console.log(err);
+                    if(doc){
+                      console.log(doc);
+                      if(!UsersNotified[doc._id.toString()]){
+                        self.enque(doc._id.toString(),oplogDoc)
+                          .then(function(){},function(){});
+                      }
+                    }
+                    else
+                      cb();
+                  });
+              }
+            ],function(){
               db.close();
-              deferred.resolve();
-            }
+            });
+
           });
       });
-
     }
     else{
       //console.log(JSON.stringify(oplogDoc));

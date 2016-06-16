@@ -18,7 +18,7 @@ module.exports.bootstrap = function(cb) {
   sails.mongodb     = require('mongodb');
 
   sails.mongoClient = sails.mongodb.MongoClient;
-  //ListenOplog.keepOnListening();
+  ListenOplog.keepOnListening();
 
   //sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
   //  if(err) deferred.reject(err);
