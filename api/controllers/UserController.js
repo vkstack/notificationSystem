@@ -101,20 +101,36 @@ module.exports = {
     sails.mongoClient.connect("mongodb://localhost:27017/mydb",function(err,db){
       if(err)
         return;
-      console.log('connected user', userID);
+      //console.log('connected user', userID);
       db.collection('subscription')
-        .updateOne({docID:docID},{$pullAll:{'subscribers.$.id':[userID]}},function(err,result){
-          if(err) return console.log(err);
-          console.log(result);
-          //if(results.result.nModified>0){
-          //  db.close();
-          //  return res.ok()
-          //}
-          db.collection('subscription').update({docID:docID},{$push:{"subscribers":{id:userID,fields:req.body.fields}}},function(err,results){
-            if(err) return;
+        .findOne({docID:docID,'subscribers.id':userID},{"subscribers.$":1},function(err,doc){
+          if(err){
             db.close();
-            return res.ok()
-          })
+            return console.log(err);
+          }
+          if(doc){
+            console.log("Existing subscriptions");
+            db.collection('subscription').update({docID:docID,'subscribers.id':userID},
+              {$set: {"subscribers.$.fields":req.body.fields}},
+              function(err){
+                if(err){
+                  db.close();
+                  return console.log(err);
+                }
+                res.ok();
+              });
+          }
+          else{
+            console.log("No subscriptions");
+            db.collection('subscription').update({docID:docID},{$push:{"subscribers":{id:userID,fields:req.body.fields}}},function(err,results){
+              if(err){
+                db.close();
+                return console.log(err);
+              }
+              db.close();
+              return res.ok()
+            })
+          }
         });
     });
   },
