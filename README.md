@@ -1,6 +1,6 @@
 [Notification Management](https://github.com/vkstack/notificationSystem)
 
-What things i have used ( **developed on Ubuntu machine** )
+What Technologies and Framework isused( **developed on Ubuntu machine** )
 
 1. nodeJS **4.4** as backend server. [[install]](https://nodejs.org/en/download/package-manager/)
 2. rabbitMQ for queuing server. [[install]](https://www.rabbitmq.com/download.html)
