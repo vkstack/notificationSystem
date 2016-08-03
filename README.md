@@ -14,8 +14,8 @@ What things i have used ( **developed on Ubuntu machine** )
 
 Install nodeJS(4.4)
 
-**curl -sL https://deb.nodesource.com/setup\_4.x | sudo -E bash -
-sudo apt-get install -y nodejs**
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
 Install RabbitMQ
 
